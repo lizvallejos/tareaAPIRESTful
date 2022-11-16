@@ -28,6 +28,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
+    console.log(req)
     const id = Crypto.randomUUID()
     const save = await contenedor.save({
       id,

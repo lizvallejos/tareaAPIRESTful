@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>PRODUCTOS</h1>
+  <form name="miform" method="post">
+
+    <fieldset>
+      <legend><strong>Datos del producto</strong></legend>
+    
+      <label for="title">Titulo</label> <br>  
+      <input name="title" id="title" size="50" maxlength="250" type="text"><br><br>
+    
+      <label for="price">Precio</label> <br>  
+      <input name="price" id="price" size="50" maxlength="250" type="number"><br><br>
+    
+      <label for="thumbnail">Thumbnail</label> <br>  
+      <input name="thumbnail" id="thumbnail" size="50" maxlength="250" type="text"><br><br>
+    </fieldset>
+    
+    <br>
+
+    <input type="button" value="enviar" onclick="enviar()">
+    </form>
+
+    <span id="resultado"></span>
+
+    <br><br><br><br><br><br>
+
+    <table border="1">
+      <thead>
+        <th>id</th>
+        <th>titulo</th>
+        <th>precio</th>
+        <th>thumbnail</th>
+      </thead>
+      <tbody id="bodyTabla"></tbody>
+    </table>
+
+    <script>
+      function enviar() {
+        let title = document.querySelector('#title')
+        let price = document.querySelector('#price')
+        let thumbnail = document.querySelector('#thumbnail')
+        let resultado = document.querySelector('#resultado')
+
+        console.log(title.value)
+        console.log(price.value)
+        console.log(thumbnail.value)
+        resultado.innerHTML = "cargando..."
+        fetch('http://localhost:8080/api/productos', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: title.value,
+            price: price.value,
+            thumbnail: thumbnail.value
+          }),
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        }).then(val => {
+          let tabla = document.querySelector('#bodyTabla')
+          tabla.innerHTML = ""
+          traerProdcutos().then(res => {
+            title.value = ""
+            price.value = 0
+            thumbnail.value = ""
+
+            resultado.innerHTML = "Se guardo correctamente"
+          })
+          
+        }).catch(err => {
+          resultado.innerHTML = "ocurrio un error: " + err
+        })
+      }
+
+      function traerProdcutos() {
+        let tabla = document.querySelector('#bodyTabla')
+
+        resultado.innerHTML = "cargando..."
+        return fetch('http://localhost:8080/api/productos', {
+          method: 'GET'
+        }).then(async val => {
+          let producs = await val.json()
+          
+          for(let produc of producs) {
+            let fila = document.createElement("tr")
+            let id = document.createElement("td")
+            let titulo = document.createElement("td")
+            let precio = document.createElement("td")
+            let thumb = document.createElement("td")
+
+            id.innerText = produc.id
+            titulo.innerText = produc.title
+            precio.innerText = produc.price
+            thumb.innerText = produc.thumbnail
+
+            fila.appendChild(id)
+            fila.appendChild(titulo)
+            fila.appendChild(precio)
+            fila.appendChild(thumb)
+
+            tabla.appendChild(fila)
+          }
+
+            resultado.innerHTML = ""
+        }).catch(err => {
+          resultado.innerHTML = "ocurrio un error al traer la informacion: " + err
+        })
+      }
+
+      traerProdcutos()
+    </script>
+</body>
+</html>

@@ -1,1 +1,1 @@
-[]
+[{"id":"a5e2a03c-19e3-4294-8411-f9b634834c2b","title":"Coca Cola 2.25l","price":"500","thumbnail":""},{"id":"d18024cc-55c6-47cb-b1bf-a1670f802b9a","title":"Fanta 2.25l","price":"500","thumbnail":""},{"id":"5cf2ddd7-0a90-4c51-bd2f-c20ac6a4588a","title":"Sprite 2.25L","price":"500","thumbnail":""}]
